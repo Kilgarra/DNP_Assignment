@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using DNP_Assignment.Authentication;
+using DNP_Assignment.Data;
+using DNP_Assignment.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +32,24 @@ namespace DNP_Assignment
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<IUserService, InMemoryUserService>();
+            services.AddSingleton<AdultManager, AdultManagerImpl>();
+
+            services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SecurityLevel1", a =>
+                    a.RequireAuthenticatedUser().RequireClaim("Level", "1", "2"));
+
+                options.AddPolicy("SecurityLevel2", policy =>
+                    policy.RequireAuthenticatedUser().RequireAssertion(context =>
+                    {
+                        Claim levelClaim = context.User.FindFirst(claim => claim.Type.Equals("Level"));
+                        if (levelClaim == null) return false;
+                        return int.Parse(levelClaim.Value) >= 2;
+                    }));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

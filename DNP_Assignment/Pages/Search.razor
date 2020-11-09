@@ -1,0 +1,183 @@
+@inject AdultManager adultManager
+@page "/search"
+@using DNP_Assignment.Models
+<h3>Search for adults</h3>
+
+<form>
+    <label for="firstname">First name</label>
+    <input type="text" id="firstname" @bind-value="firstName">
+    <label for="lastname">Last name</label>
+    <input type="text" id="lastname" @bind-value="lastName"><br>
+
+    <label for="haircolor">Haircolor</label>
+    <select id="haircolor" @onchange="haircolor">
+        <option disabled selected value=""></option>
+        <option value="Blonde">Blonde</option>
+        <option value="Red">Red</option>
+        <option value="Brown">Brown</option>
+        <option value="Black">Black</option>
+        <option value="White">White</option>
+        <option value="Grey">Grey</option>
+        <option value="Blue">Blue</option>
+        <option value="Green">Green</option>
+    </select>
+    <label for="eyecolor">Eyecolor</label>
+    <select id="eyecolor" @onchange="eyecolor">
+        <option disabled selected value=""></option>
+        <option value="Brown">Brown</option>
+        <option value="Black">Black</option>
+        <option value="Grey">Grey</option>
+        <option value="Blue">Blue</option>
+        <option value="Amber">Amber</option>
+        <option value="Hazel">Hazel</option>
+    </select><br>
+
+
+    <label for="height">Height</label>
+    <input type="text" id="height" @bind-value="height">
+    <label for="weight">Weight</label>
+    <input type="text" id="weight" @bind-value="weight"><br>
+
+    <label for="age">Age</label>
+    <input type="text" id="age" @bind-value="age">
+    <label>Sex</label>
+    <input type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
+    <label for="m">M</label>
+    <input type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
+    <label for="f">F</label>
+    <button type="button" @onclick="search">Search</button>
+
+
+
+
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>ID</th>
+            <th>Haircolor</th>
+            <th>Eyecolor</th>
+            <th>Age</th>
+            <th>Weight</th>
+            <th>Height</th>
+            <th>Job</th>
+            <th>Sex</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (searchedAdult != null)
+        {
+            foreach (Adult adult in searchedAdult)
+            {
+                <tr>
+                    <td>@adult.FirstName</td>
+                    <td>@adult.LastName</td>
+                    <td>@adult.Id</td>
+                    <td>@adult.HairColor</td>
+                    <td>@adult.EyeColor</td>
+                    <td>@adult.Age</td>
+                    <td>@adult.Weight</td>
+                    <td>@adult.Height</td>
+                    <td>@adult.JobTitle</td>
+                    <td>@adult.Sex</td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            foreach (Adult adult in adultManager.getAllAdults())
+            {
+                <tr>
+                    <td>@adult.FirstName</td>
+                    <td>@adult.LastName</td>
+                    <td>@adult.Id</td>
+                    <td>@adult.HairColor</td>
+                    <td>@adult.EyeColor</td>
+                    <td>@adult.Age</td>
+                    <td>@adult.Weight</td>
+                    <td>@adult.Height</td>
+                    <td>@adult.JobTitle</td>
+                    <td>@adult.Sex</td>
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public string firstName;
+    public string lastName;
+    public string hairColor;
+    public string eyeColor;
+    public string weight;
+    public string height;
+    public string jobTitle;
+    public string age;
+    public string sex;
+    public List<Adult> searchedAdult;
+
+    private void search()
+    {
+        IEnumerable<Adult> query = adultManager.getAllAdults();
+
+        if (!String.IsNullOrEmpty(firstName))
+        {
+            query = query.Where(x => x.FirstName == firstName).ToList();
+        }
+        if (!String.IsNullOrEmpty(lastName))
+        {
+            query = query.Where(x => x.LastName == lastName).ToList();
+        }
+        if (!String.IsNullOrEmpty(hairColor))
+        {
+            query = query.Where(x => x.HairColor == hairColor).ToList();
+        }
+        if (!String.IsNullOrEmpty(eyeColor))
+        {
+            query = query.Where(x => x.EyeColor == eyeColor).ToList();
+        }
+        if (!String.IsNullOrEmpty(weight))
+        {
+            query = query.Where(x => x.Weight.ToString() == weight).ToList();
+        }
+        if (!String.IsNullOrEmpty(height))
+        {
+            query = query.Where(x => x.Height.ToString() == height).ToList();
+        }
+        if (!String.IsNullOrEmpty(jobTitle))
+        {
+            query = query.Where(x => x.JobTitle == jobTitle).ToList();
+        }
+        if (!String.IsNullOrEmpty(age))
+        {
+            query = query.Where(x => x.Age.ToString() == age).ToList();
+        }
+        if (!String.IsNullOrEmpty(sex))
+        {
+            query = query.Where(x => x.Sex == sex).ToList();
+        }
+
+        searchedAdult = query.ToList();
+
+    }
+    private void haircolor(ChangeEventArgs a)
+    {
+        hairColor = a.Value.ToString();
+    }
+    private void eyecolor(ChangeEventArgs a)
+    {
+        eyeColor = a.Value.ToString();
+    }
+    private void genderSelected(ChangeEventArgs a)
+    {
+        sex = a.Value.ToString();
+    }
+
+
+}

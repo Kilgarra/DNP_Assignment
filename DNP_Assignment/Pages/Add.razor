@@ -1,0 +1,101 @@
+@inject AdultManager adultManager
+@using DNP_Assignment.Models
+@inject NavigationManager NavigationManager;
+@page "/add"
+@using DNP_Assignment.Models
+<h3>Add an adult</h3>
+<form>
+    <label for="firstname">First name</label>
+    <input type="text" id="firstname" @bind-value="firstName">
+    <label for="lastname">Last name</label>
+    <input type="text" id="lastname" @bind-value="lastName"><br>
+    <label for="jobtitle">Job Title</label>
+    <input type="text" id="jobtitle" @bind-value="jobTitle">
+
+    <label for="haircolor">Haircolor</label>
+    <select id="haircolor" @bind="hairColor">
+        <option disabled selected value=""></option>
+        <option value="Blonde">Blonde</option>
+        <option value="Red">Red</option>
+        <option value="Brown">Brown</option>
+        <option value="Black">Black</option>
+        <option value="White">White</option>
+        <option value="Grey">Grey</option>
+        <option value="Blue">Blue</option>
+        <option value="Green">Green</option>
+    </select>
+    <label for="eyecolor">Eyecolor</label>
+    <select id="eyecolor" @bind="eyeColor">
+        <option disabled selected value=""></option>
+        <option value="Brown">Brown</option>
+        <option value="Black">Black</option>
+        <option value="Grey">Grey</option>
+        <option value="Blue">Blue</option>
+        <option value="Amber">Amber</option>
+        <option value="Hazel">Hazel</option>
+    </select><br>
+
+
+    <label for="height">Height</label>
+    <input type="text" id="height" @bind-value="height">
+    <label for="weight">Weight</label>
+    <input type="text" id="weight" @bind-value="weight"><br>
+
+    <label for="age">Age</label>
+    <input type="text" id="age" @bind-value="age">
+    <label>Sex</label>
+    <input type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
+    <label for="m">M</label>
+    <input type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
+    <label for="f">F</label>
+
+
+    <button type="button" @onclick="addAdult">Add</button><br />
+    @if (labelflag)
+    {
+        <label style="color:red">Not all fields have been filled out or adult already exists!</label>
+    }
+
+
+
+</form>
+
+@code {
+    public string firstName;
+    public string lastName;
+    public string hairColor;
+    public string eyeColor;
+    public string weight;
+    public string height;
+    public string jobTitle;
+    public string age;
+    public string sex;
+    public int id;
+    private bool labelflag;
+
+    private void addAdult()
+    {
+        try
+        {
+            int h = int.Parse(height);
+            double w = double.Parse(weight);
+            int a = int.Parse(age);
+            id = adultManager.getAllAdults().Count;
+            Adult adult = new Adult(firstName, lastName, id, hairColor, eyeColor, a, w, h, jobTitle, sex);
+            adultManager.addAdult(adult);
+            labelflag = false;
+            NavigationManager.NavigateTo("add", true);
+
+        }
+        catch (Exception e)
+        {
+            labelflag = true;
+        }
+
+    }
+    private void genderSelected(ChangeEventArgs a)
+    {
+        sex = a.Value.ToString();
+    }
+
+}

@@ -1,0 +1,47 @@
+@page "/view"
+@inject AdultManager adultManager
+@using DNP_Assignment.Models
+<h3>View all adults</h3>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>ID</th>
+        <th>Haircolor</th>
+        <th>Eyecolor</th>
+        <th>Age</th>
+        <th>Weight</th>
+        <th>Height</th>
+        <th>Job</th>
+        <th>Sex</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Adult adult in adultManager.getAllAdults())
+    {
+        <tr>
+            <td>@adult.FirstName</td>
+            <td>@adult.LastName</td>
+            <td>@adult.Id</td>
+            <td>@adult.HairColor</td>
+            <td>@adult.EyeColor</td>
+            <td>@adult.Age</td>
+            <td>@adult.Weight</td>
+            <td>@adult.Height</td>
+            <td>@adult.JobTitle</td>
+            <td>@adult.Sex</td>
+        </tr>
+
+    }
+
+    </tbody>
+</table>
+
+
+@code {
+
+}  
+}
