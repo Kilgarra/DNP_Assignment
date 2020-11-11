@@ -32,7 +32,7 @@ namespace DNP_Assignment
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddScoped<IUserService, InMemoryUserService>();
+            services.AddScoped<IUserService, CloudUserService>();
             services.AddSingleton<AdultManager, AdultManagerImpl>();
 
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

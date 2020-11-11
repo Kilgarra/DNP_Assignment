@@ -20,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Adult adult in adultManager.getAllAdults())
+    @foreach (Adult adult in adults)
     {
         <tr>
             <td>@adult.FirstName</td>
@@ -42,6 +42,14 @@
 
 
 @code {
+    public List<Adult> adults;
+
+    protected async override Task OnInitializedAsync()
+    {
+        adults=new List<Adult>();
+        adults = await adultManager.getAllAdults();
+    }
+    
 
 }  
 }

@@ -1,191 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace DNP_Assignment.Models
 {
     public class AdultManagerImpl:AdultManager
     {
-        private List<Adult> adults;
-        private string adultFile = "Adults.json";
-
+        private HttpClient client;
         public AdultManagerImpl()
         {
-            if (!File.Exists(adultFile))
+            client=new HttpClient();
+        }
+        public async Task addAdult(Adult adult)
+        {
+            string adultSerialized = JsonSerializer.Serialize(adult);
+            StringContent content =new StringContent(
+                adultSerialized,
+                Encoding.UTF8,
+                "application/json"
+                );
+            HttpResponseMessage response = await client.PostAsync("http://localhost:5002/adults", content);
+            if (response.StatusCode==HttpStatusCode.InternalServerError)
             {
-                File.Create(adultFile);
+                throw new Exception(response.Content.ToString());
             }
-            else
+        }
+        public async Task<List<Adult>> getAllAdults()
+        {
+            try
             {
-                readAdults();
-            }
+                string response = await client.GetStringAsync("http://localhost:5002/adults");
+                List<Adult> adults = JsonSerializer.Deserialize<List<Adult>>(response.ToString());
+                
+                return adults;
 
-        }
-        public void addAdult(Adult adult)
-        {
-            foreach (Adult a in adults)
-            {
-                if (a == adult)
-                {
-                    throw new ArgumentException("Adult already exists");
-                }
             }
-            adults.Add(adult);
-            string fileContent = JsonSerializer.Serialize(adults);
-            File.WriteAllText(adultFile, fileContent);
-
-        }
-        public List<Adult> getAllAdults()
-        {
-            return adults;
-        }
-        public Adult getAdult(Adult adult)
-        {
-            foreach (Adult a in adults)
+            catch (Exception e)
             {
-                if (a == adult)
-                {
-                    return a;
-                }
+                Console.WriteLine("gsdf");
+                throw;
             }
-            throw new Exception("Adult does not exist");
+           
         }
-
-        public List<Adult> getAdultsByAge(int age)
-        {
-            List<Adult> ageList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.Age.Equals(age))
-                {
-                    ageList.Add(a);
-                }
-            }
-            return ageList;
-        }
-
-        public List<Adult> getAdultsByEyecolor(string eyecolor)
-        {
-            List<Adult> eyeColorList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.EyeColor.Equals(eyecolor))
-                {
-                    eyeColorList.Add(a);
-                }
-            }
-            return eyeColorList;
-        }
-
-        public List<Adult> getAdultsByFirstName(string firstName)
-        {
-            List<Adult> firstNameList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.FirstName.Equals(firstName))
-                {
-                    firstNameList.Add(a);
-                }
-            }
-            return firstNameList;
-        }
-
-        public List<Adult> getAdultsByHaircolor(string haircolor)
-        {
-            List<Adult> hairColorList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.HairColor.Equals(haircolor))
-                {
-                    hairColorList.Add(a);
-                }
-            }
-            return hairColorList;
-        }
-
-        public List<Adult> getAdultsByHeight(int height)
-        {
-            List<Adult> heightList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.Height.Equals(height))
-                {
-                    heightList.Add(a);
-                }
-            }
-            return heightList;
-        }
-
-        public Adult getAdultsByID(int ID)
-        {
-            List<Adult> idList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.Id.Equals(ID))
-                {
-                    return a;
-                }
-            }
-            throw new Exception("There is no adult with this ID");
-        }
-
-        public List<Adult> getAdultsByJob(string job)
-        {
-            List<Adult> jobList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.JobTitle.Equals(job))
-                {
-                    jobList.Add(a);
-                }
-            }
-            return jobList;
-        }
-
-        public List<Adult> getAdultsByLastName(string lastName)
-        {
-            List<Adult> lastNameList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.LastName.Equals(lastName))
-                {
-                    lastNameList.Add(a);
-                }
-            }
-            return lastNameList;
-        }
-
-        public List<Adult> getAdultsBySex(string sex)
-        {
-            List<Adult> sexList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.Sex.Equals(sex))
-                {
-                    sexList.Add(a);
-                }
-            }
-            return sexList;
-        }
-
-        public List<Adult> getAdultsByWeight(double weight)
-        {
-            List<Adult> weightList = new List<Adult>();
-            foreach (Adult a in adults)
-            {
-                if (a.Weight.Equals(weight))
-                {
-                    weightList.Add(a);
-                }
-            }
-            return weightList;
-        }
-
-        public void readAdults()
-        {
-            string file = File.ReadAllText(adultFile);
-            adults = JsonSerializer.Deserialize<List<Adult>>(file);
-        }
+        
     }
 }

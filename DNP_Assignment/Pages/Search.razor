@@ -4,25 +4,35 @@
 <h3>Search for adults</h3>
 
 <form>
-    <label for="firstname">First name</label>
-    <input type="text" id="firstname" @bind-value="firstName">
-    <label for="lastname">Last name</label>
-    <input type="text" id="lastname" @bind-value="lastName"><br>
-
-    <label for="haircolor">Haircolor</label>
-    <select id="haircolor" @onchange="haircolor">
-        <option disabled selected value=""></option>
-        <option value="Blonde">Blonde</option>
-        <option value="Red">Red</option>
-        <option value="Brown">Brown</option>
-        <option value="Black">Black</option>
-        <option value="White">White</option>
-        <option value="Grey">Grey</option>
-        <option value="Blue">Blue</option>
-        <option value="Green">Green</option>
-    </select>
+    <div class="form-group">
+        <label for="firstname" >First name</label>
+        <input class="form-control" type="text" id="firstname" @bind-value="firstName">
+        </div>
+    <div class="form-group">
+        <label for="lastname">Last name</label>
+        <input class="form-control" type="text" id="lastname" @bind-value="lastName">
+    </div>
+    <div class="form-group">
+        <label for="jobtitle">Job Title</label>
+        <input class="form-control" type="text" id="jobtitle" @bind-value="jobTitle">
+    </div>
+    <div class="form-group">
+        <label for="haircolor">Haircolor</label>
+        <select class="form-control" id="haircolor" @bind="hairColor">
+            <option disabled selected value=""></option>
+            <option value="Blonde">Blonde</option>
+            <option value="Red">Red</option>
+            <option value="Brown">Brown</option>
+            <option value="Black">Black</option>
+            <option value="White">White</option>
+            <option value="Grey">Grey</option>
+            <option value="Blue">Blue</option>
+            <option value="Green">Green</option>
+        </select>
+    </div>
+    <div class="form-group">
     <label for="eyecolor">Eyecolor</label>
-    <select id="eyecolor" @onchange="eyecolor">
+    <select class="form-control" id="eyecolor" @bind="eyeColor">
         <option disabled selected value=""></option>
         <option value="Brown">Brown</option>
         <option value="Black">Black</option>
@@ -30,28 +40,33 @@
         <option value="Blue">Blue</option>
         <option value="Amber">Amber</option>
         <option value="Hazel">Hazel</option>
-    </select><br>
+    </select>
+    </div>
 
-
-    <label for="height">Height</label>
-    <input type="text" id="height" @bind-value="height">
-    <label for="weight">Weight</label>
-    <input type="text" id="weight" @bind-value="weight"><br>
-
-    <label for="age">Age</label>
-    <input type="text" id="age" @bind-value="age">
-    <label>Sex</label>
-    <input type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
-    <label for="m">M</label>
-    <input type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
-    <label for="f">F</label>
-    <button type="button" @onclick="search">Search</button>
-
-
-
-
+    <div class="form-group">
+        <label for="height">Height</label>
+        <input class="form-control" type="text" id="height" @bind-value="height">
+    </div>
+    <div class="form-group">
+        <label for="weight">Weight</label>
+        <input class="form-control" type="text" id="weight" @bind-value="weight">
+    </div>
+    <div class="form-group">
+        <label for="age">Age</label>
+        <input class="form-control" type="text" id="age" @bind-value="age">
+    </div>
+    
+        <label>Sex</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
+            <label class="form-check-label" for="m">M</label>
+        </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
+        <label class="form-check-label" for="f">F</label>
+    </div>
 </form>
-
+<button class="btn btn-secondary" type="button" @onclick="search">Search</button><hr>
 
 <table class="table">
     <thead>
@@ -90,7 +105,7 @@
         }
         else
         {
-            foreach (Adult adult in adultManager.getAllAdults())
+            foreach (Adult adult in adults)
             {
                 <tr>
                     <td>@adult.FirstName</td>
@@ -121,10 +136,17 @@
     public string age;
     public string sex;
     public List<Adult> searchedAdult;
+    public List<Adult> adults;
+
+    protected async override Task OnInitializedAsync()
+    {
+        adults=new List<Adult>();
+        adults = await adultManager.getAllAdults();
+    }
 
     private void search()
     {
-        IEnumerable<Adult> query = adultManager.getAllAdults();
+        IEnumerable<Adult> query = adults;
 
         if (!String.IsNullOrEmpty(firstName))
         {

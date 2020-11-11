@@ -4,28 +4,37 @@
 @page "/add"
 @using DNP_Assignment.Models
 <h3>Add an adult</h3>
-<form>
-    <label for="firstname">First name</label>
-    <input type="text" id="firstname" @bind-value="firstName">
-    <label for="lastname">Last name</label>
-    <input type="text" id="lastname" @bind-value="lastName"><br>
-    <label for="jobtitle">Job Title</label>
-    <input type="text" id="jobtitle" @bind-value="jobTitle">
 
-    <label for="haircolor">Haircolor</label>
-    <select id="haircolor" @bind="hairColor">
-        <option disabled selected value=""></option>
-        <option value="Blonde">Blonde</option>
-        <option value="Red">Red</option>
-        <option value="Brown">Brown</option>
-        <option value="Black">Black</option>
-        <option value="White">White</option>
-        <option value="Grey">Grey</option>
-        <option value="Blue">Blue</option>
-        <option value="Green">Green</option>
-    </select>
+<form>
+    <div class="form-group">
+        <label for="firstname" >First name</label>
+        <input class="form-control" type="text" id="firstname" @bind-value="firstName">
+        </div>
+    <div class="form-group">
+        <label for="lastname">Last name</label>
+        <input class="form-control" type="text" id="lastname" @bind-value="lastName">
+    </div>
+    <div class="form-group">
+        <label for="jobtitle">Job Title</label>
+        <input class="form-control" type="text" id="jobtitle" @bind-value="jobTitle">
+    </div>
+    <div class="form-group">
+        <label for="haircolor">Haircolor</label>
+        <select class="form-control" id="haircolor" @bind="hairColor">
+            <option disabled selected value=""></option>
+            <option value="Blonde">Blonde</option>
+            <option value="Red">Red</option>
+            <option value="Brown">Brown</option>
+            <option value="Black">Black</option>
+            <option value="White">White</option>
+            <option value="Grey">Grey</option>
+            <option value="Blue">Blue</option>
+            <option value="Green">Green</option>
+        </select>
+    </div>
+    <div class="form-group">
     <label for="eyecolor">Eyecolor</label>
-    <select id="eyecolor" @bind="eyeColor">
+    <select class="form-control" id="eyecolor" @bind="eyeColor">
         <option disabled selected value=""></option>
         <option value="Brown">Brown</option>
         <option value="Black">Black</option>
@@ -33,27 +42,37 @@
         <option value="Blue">Blue</option>
         <option value="Amber">Amber</option>
         <option value="Hazel">Hazel</option>
-    </select><br>
+    </select>
+    </div>
 
-
-    <label for="height">Height</label>
-    <input type="text" id="height" @bind-value="height">
-    <label for="weight">Weight</label>
-    <input type="text" id="weight" @bind-value="weight"><br>
-
-    <label for="age">Age</label>
-    <input type="text" id="age" @bind-value="age">
-    <label>Sex</label>
-    <input type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
-    <label for="m">M</label>
-    <input type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
-    <label for="f">F</label>
-
-
-    <button type="button" @onclick="addAdult">Add</button><br />
+    <div class="form-group">
+        <label for="height">Height</label>
+        <input class="form-control" type="text" id="height" @bind-value="height">
+    </div>
+    <div class="form-group">
+        <label for="weight">Weight</label>
+        <input class="form-control" type="text" id="weight" @bind-value="weight">
+    </div>
+    <div class="form-group">
+        <label for="age">Age</label>
+        <input class="form-control" type="text" id="age" @bind-value="age">
+    </div>
+    
+        <label>Sex</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="m" name="gender" value="M" @onchange="genderSelected">
+            <label class="form-check-label" for="m">M</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="f" name="gender" value="F" @onchange="genderSelected">
+            <label class="form-check-label" for="f">F</label>
+            </div>
+    
+    
+    <button class="btn btn-secondary" type="button" @onclick="addAdult">Add</button><br/>
     @if (labelflag)
     {
-        <label style="color:red">Not all fields have been filled out or adult already exists!</label>
+        <label style="color:#ff0000">Not all fields have been filled out or adult already exists!</label>
     }
 
 
@@ -71,8 +90,13 @@
     public string age;
     public string sex;
     public int id;
-    private bool labelflag;
+    private bool labelflag=false;
+    public List<Adult> adults;
 
+    protected async override Task OnInitializedAsync()
+    {
+        adults = await adultManager.getAllAdults();
+    }
     private void addAdult()
     {
         try
@@ -80,7 +104,8 @@
             int h = int.Parse(height);
             double w = double.Parse(weight);
             int a = int.Parse(age);
-            id = adultManager.getAllAdults().Count;
+            List<Adult> countadults = adults;
+            id = countadults.Count;
             Adult adult = new Adult(firstName, lastName, id, hairColor, eyeColor, a, w, h, jobTitle, sex);
             adultManager.addAdult(adult);
             labelflag = false;

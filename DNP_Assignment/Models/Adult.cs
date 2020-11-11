@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace DNP_Assignment.Models
 {
@@ -20,7 +21,7 @@ namespace DNP_Assignment.Models
         {
 
         }
-
+        [JsonPropertyName("JobTitle")]
         public String JobTitle { get; set; }
 
 
