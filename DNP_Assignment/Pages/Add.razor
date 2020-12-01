@@ -105,7 +105,7 @@
             double w = double.Parse(weight);
             int a = int.Parse(age);
             List<Adult> countadults = adults;
-            id = countadults.Count;
+            id = countadults.Count+1;
             Adult adult = new Adult(firstName, lastName, id, hairColor, eyeColor, a, w, h, jobTitle, sex);
             adultManager.addAdult(adult);
             labelflag = false;
